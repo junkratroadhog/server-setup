@@ -1,0 +1,6 @@
+[ubuntu_hosts]
+quantumcore ansible_host=192.168.0.243 
+
+[oracle_db_server]
+utest ansible_host=192.168.0.243 ansible_user=docker ansible_password=root docker_container_name=db-utest
+dtest ansible_host=192.168.0.243 ansible_user=docker ansible_password=root docker_container_name=db-dtest
