@@ -1,6 +1,6 @@
 ---
 - name: Install Docker on cloud server
-  hosts: cloud
+  hosts: ubuntu_hosts
   become: yes
   tasks:
 

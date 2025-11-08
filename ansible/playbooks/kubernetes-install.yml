@@ -1,0 +1,48 @@
+---
+- name: Install Kubernetes (k3s) on Ubuntu servers
+  hosts: ubuntu_hosts       # inventory group
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install required packages
+      apt:
+        name:
+          - curl
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+          - conntrack
+          - socat
+          - gnupg
+        state: present
+
+    - name: Download and install k3s (lightweight Kubernetes)
+      shell: |
+        curl -sfL https://get.k3s.io | sh -
+      args:
+        creates: /usr/local/bin/kubectl
+
+    - name: Ensure k3s service is running
+      systemd:
+        name: k3s
+        state: started
+        enabled: yes
+
+    - name: Add current user to k3s group
+      user:
+        name: "{{ ansible_user }}"
+        groups: k3s
+        append: yes
+
+    - name: Verify kubectl installation
+      command: kubectl version --client
+      register: kubectl_version
+      changed_when: false
+
+    - debug:
+        msg: "{{ kubectl_version.stdout }}"
